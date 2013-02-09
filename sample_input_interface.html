@@ -1,0 +1,80 @@
+
+<html>
+<head>
+</head>
+<body>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<audio id="left" controls src="leftSword.wav"></audio>
+	<audio id="center" controls src="centerSword.wav"></audio>
+	<audio id="right" controls src="rightSword.wav"></audio>
+	<script type="text/javascript">
+		var left=document.getElementById("left");		
+		var center=document.getElementById("center");
+		var right=document.getElementById("right");	
+
+		var ALLOW_KEYPRESS_RANGE = 1000;
+		var TIME_INTERVAL = 3000;
+		var next_range;
+		var temp_date_future = null;
+		var accept_a_move;
+		var end_time;
+		var expected_arr_length;
+		var arr = [];
+
+		$(document).ready(function() {
+			next_range = (new Date()).getTime() + TIME_INTERVAL;	
+			expected_arr_length = 1;
+		});
+
+		$('body').keydown(function(event) {
+			if(event.which==37) {
+				respond_to_keypress("L");
+				console.log("L")
+			} else if(event.which==38) {
+				respond_to_keypress("U");
+			} else if(event.which==39){
+				respond_to_keypress("R");
+			}
+		});
+
+		function respond_to_keypress(move) {
+			console.debug(move)
+			if ( (new Date()).getTime() < next_range ) {
+				// do nothing
+				console.debug("):")
+			} else if ( (new Date()).getTime() < next_range + ALLOW_KEYPRESS_RANGE) {
+				if (move == "L") {
+					left.play();
+				} else if (move == "R") {
+					right.play();
+				} else if (move == "U") {
+					center.play();
+				}
+				arr.push(move);
+				console.log("ok")
+			} else {
+				if (accept_a_move) {
+					arr.push(" ")
+				}
+
+				accept_a_move = false;
+
+				if ( arr.length > expected_arr_length) {
+					arr.splice(expected_arr_length, arr.length - expected_arr_length)
+				}
+
+				expected_arr_length++;
+
+				console.log("asdfa")
+
+				var d = (new Date()).getTime();
+				if ( d < next_range + TIME_INTERVAL)
+					next_range += TIME_INTERVAL;
+				else {
+					next_range += (TIME_INTERVAL + 1)*((new Date()).getTime() - next_range + TIME_INTERVAL)%(TIME_INTERVAL)
+				}
+			}
+		}
+	</script>
+</body>
+</html>
