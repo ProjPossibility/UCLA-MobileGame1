@@ -179,12 +179,14 @@
 			intervalMax = 16;
 			break;
 		default:
+			intervalMax = 4;
 			break;
 		}
 		if(intervalnum>=intervalMax) {
 			document.getElementById("demo").innerHTML = inputString;
 					clearInterval(time);
 					timer = 0;
+					intervalnum=0;
 					if(!counter) {
 						game.child('defending').set(otherID);
 						game.child('input').set(inputString.join(''));
