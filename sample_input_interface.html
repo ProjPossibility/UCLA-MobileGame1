@@ -4,9 +4,9 @@
 </head>
 <body>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-	<audio id="left" controls src="leftSword.wav"></audio>
-	<audio id="center" controls src="centerSword.wav"></audio>
-	<audio id="right" controls src="rightSword.wav"></audio>
+	<audio id="left" controls src="sounds/leftSword.wav"></audio>
+	<audio id="center" controls src="sounds/centerSword.wav"></audio>
+	<audio id="right" controls src="sounds/rightSword.wav"></audio>
 	<script type="text/javascript">
 		var left=document.getElementById("left");		
 		var center=document.getElementById("center");
@@ -45,15 +45,18 @@
 				accept_a_move = false;
 			} else if ( curr_time < next_range + ALLOW_KEYPRESS_RANGE) {
 				console.debug("else if")
-				if (move == "L") {
-					left.play();
-				} else if (move == "R") {
-					right.play();
-				} else if (move == "U") {
-					center.play();
-				}
 				accept_a_move = true;
-				arr.push(move);
+				if ( arr.length < expected_arr_length ) {
+					console.debug("add a value! " + arr[expected_arr_length-1])
+					if (move == "L") {
+						left.play();
+					} else if (move == "R") {
+						right.play();
+					} else if (move == "U") {
+						center.play();
+					}
+					arr.push(move);
+				}
 			} else {
 				console.debug("else")
 				if (accept_a_move) {
