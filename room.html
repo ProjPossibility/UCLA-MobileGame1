@@ -79,7 +79,7 @@
 	var lSword = new Audio("sounds/leftSword.wav");
 	var rSword = new Audio("sounds/rightSword.wav");
 	var cSword = new Audio("sounds/centerSword.wav");
-	var song = new Audio("music/stalfos.mp3");
+	var song = new Audio("music2/stalfos.mp3");
 	song.loop = true;
 	
 	var inputString = ['-', '-', '-', '-'];
@@ -89,12 +89,11 @@
 	var delay = false;
 	var timer = 0;
 	var tempoIntervals = [false,false,false,false];
-	var timerIntervals = 1000;
+	var timerIntervals = 100;
 	var intervalnum = 0;
 	var time;
 	var timerCheck;
 	function start(counter, str) {
-		song.play();
 		console.log("here");
 		clearInterval(time);
         timer = 0;
@@ -105,7 +104,7 @@
 	        document.getElementById("mode").innerHTML = "Defending";
 	    else
 	        document.getElementById("mode").innerHTML = "Attacking";
-	    time = setInterval(function() { Timer(counter, str) } , 1);
+	    time = setInterval(function() { Timer(counter, str) } , 10);
 	}
 
 	function setKeyPressed()
@@ -130,16 +129,16 @@
 		switch(Math.floor(1+parseInt($("#roundNum").text())/2))
 		{
 		case 1,2:
-			timerIntervals = 1000;
+			timerIntervals = 100;
 			break;
 		case 3:
-			timerIntervals = 500;
+			timerIntervals = 50;
 			break;
 		case 4:
-			timerIntervals = 1000;
+			timerIntervals = 100;
 			break;
 		case 5:
-			timerIntervals = 500;
+			timerIntervals = 50;
 			break;
 		default:
 			break;
@@ -150,7 +149,7 @@
 	                cow.play();
 			tempoIntervals[intervalnum] = true;
 	        }
-	    if(timerCheck &&  timer%timerIntervals == 100) {
+	    if(timerCheck &&  timer%timerIntervals == 10) {
 		    tempoIntervals[intervalnum] = false;
 	            if(counter) {
 	                if(str[intervalnum] != '-') {
@@ -196,7 +195,7 @@
 					}
 
 			}
-		if(Key.isDown(Key.UP) && keyTimer<50 && inputDelayTimer>100)
+		if(Key.isDown(Key.UP) && keyTimer<5 && inputDelayTimer>10)
 		{
 			delay = true;
 			for(var i = 0; i<intervalMax;i++)
@@ -216,7 +215,7 @@
 				}
 
 		}
-		if(Key.isDown(Key.RIGHT) &&keyTimer<50 && inputDelayTimer>100)
+		if(Key.isDown(Key.RIGHT) &&keyTimer<5 && inputDelayTimer>10)
 		{
 			delay = true;
 			for(var i = 0; i<intervalMax;i++)
@@ -233,7 +232,7 @@
 			if(delay)
 				inputDelayTimer = 0;
 		}
-		if(Key.isDown(Key.LEFT) &&keyTimer<50 && inputDelayTimer>100)
+		if(Key.isDown(Key.LEFT) &&keyTimer<5 && inputDelayTimer>10)
 		{
 			delay = true;
 			for(var i = 0; i<4;i++)
@@ -370,6 +369,7 @@
 			$("#afterGame").show();
 		}
 		function beginGame() {
+                        song.play();
 			$("#roomNum").hide();
 			//$("#gameInfo").show();
 			$("#afterGame").hide();
