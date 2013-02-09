@@ -64,6 +64,17 @@ function setKeyReleased()
 	keyTimer = 0;
 }
 
+function makeDefendString( atkstr )
+{
+	for ( int i = 0; i < atkstr.length; i++ )
+	{
+		if ( atkstr[i] == 'L' )
+			atkstr[i] = 'R';
+		else if (  atkstr[i] == 'L' )
+			atkstr[i] = 'L';
+	}
+}
+
 var timerCheck = false;
 function Timer(counter, str)
 {
@@ -95,7 +106,7 @@ function Timer(counter, str)
                 clearInterval(time);
                 timer = 0;
                 if(!counter)
-                    start(true, inputString);
+                    start(true, makeDefendString(inputString) );
                     
         }
 	if(Key.isDown(Key.UP) &&keyTimer<50)
