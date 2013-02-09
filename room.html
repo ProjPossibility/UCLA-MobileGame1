@@ -3,9 +3,7 @@
 	<title>Audio Sword</title>
 </head>
 <body>
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
 	<div id="mode"></div>
     <div id="demo"></div>
     <div id="arr"></div>
@@ -56,12 +54,6 @@
 	</div>
 	<script type="text/javascript" src="https://cdn.firebase.com/v0/firebase.js"></script>
 	<script>
-	$("body").swiperight(function() {
-		var press = jQuery.Event("keypress");
-		press.ctrlKey = false;
-		press.which = 37;
-		$("body").trigger(press);
-	});
 	var Key = {
 	        _pressed: {},
 	        LEFT: 37,
@@ -73,11 +65,9 @@
 	        },
 	        onKeydown: function(event) {
 	            this._pressed[event.keyCode] = true;
-	console.log(event.keyCode);
 	        },
 	        onKeyup: function(event) {
 	            delete this._pressed[event.keyCode];
-	console.log(event.keyCode);
 	        }
 	    };
 	    window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
@@ -89,6 +79,9 @@
 	var lSword = new Audio("sounds/leftSword.wav");
 	var rSword = new Audio("sounds/rightSword.wav");
 	var cSword = new Audio("sounds/centerSword.wav");
+	var song = new Audio("music/stalfos.mp3");
+	song.loop = true;
+	
 	var inputString = ['-', '-', '-', '-'];
 	var keyPressed = false;
 	var keyTimer = 0;
@@ -100,7 +93,10 @@
 	var intervalnum = 0;
 	var time;
 	var timerCheck;
+	var round = 1;
 	function start(counter, str) {
+		song.play();
+		console.log("here");
 		clearInterval(time);
         timer = 0;
 	    intervalnum = 0;
@@ -132,7 +128,7 @@
 		inputDelayTimer+=1;
 		if(keyPressed)
 			keyTimer +=1;
-		switch(Math.floor(1+parseInt($("#roundNum").text())/2))
+		switch(round)
 		{
 		case 1,2:
 			timerIntervals = 1000;
@@ -171,7 +167,7 @@
 	            dog.play();
 	        }
 		var intervalMax = 0;
-		switch(Math.floor(1+parseInt($("#roundNum").text())/2))
+		switch(round)
 		{
 		case 1:
 			intervalMax = 4;
@@ -192,6 +188,7 @@
 			document.getElementById("demo").innerHTML = inputString;
 					clearInterval(time);
 					timer = 0;
+					round++;
 					if(!counter) {
 						game.child('defending').set(otherID);
 						game.child('input').set(inputString.join(''));
@@ -323,12 +320,12 @@
 		});
 		game.on('child_changed',function(data) {
 			if(data.name()=="attacking") {
+                                document.getElementById("attackAudio").play();
 				currentAttacks=[];
 				currentTimeouts=[];
 				$("#attacks").text("0");
 				$("#defends").text("0");
 				if(data.val()==playerID) {
-					document.getElementById("attackAudio").play();
 					canAttack=true;
 					start(false,"");
 				} else {
