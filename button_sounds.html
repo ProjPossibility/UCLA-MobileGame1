@@ -1,0 +1,32 @@
+<header>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+
+    <script>
+    var up = new Audio("./sounds/center.wav");
+    var left = new Audio("./sounds/left.wav");
+    var right = new Audio("./sounds/right.wav");
+
+    $(document).ready(function() {
+        $( "#left_sword_button" ).click(function() {
+            left.play()
+        })
+
+        $( "#up_sword_button" ).click(function() {
+            up.play()
+        })
+
+        $( "#right_sword_button" ).click(function() {
+            right.play()
+        })
+    })
+    </script>
+
+
+</header>
+
+<body>
+<input id = "left_sword_button"  type="button"   value="L"  class = "btn btn-large btn-block btn-primary"/>
+<input id = "up_sword_button"    type="button"     value="U" class = "btn btn-large btn-block btn-primary"/>
+<input id = "right_sword_button" type="button"  value="R" class = "btn btn-large btn-block btn-primary"/>
+</body>
