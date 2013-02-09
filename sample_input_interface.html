@@ -22,6 +22,7 @@
 		var arr = [];
 
 		$(document).ready(function() {
+			// change TIME_INTERVAL here to when the music starts
 			next_range = (new Date()).getTime() + TIME_INTERVAL;	
 			expected_arr_length = 1;
 		});
@@ -29,7 +30,6 @@
 		$('body').keydown(function(event) {
 			if(event.which==37) {
 				respond_to_keypress("L");
-				console.log("L")
 			} else if(event.which==38) {
 				respond_to_keypress("U");
 			} else if(event.which==39){
@@ -38,11 +38,13 @@
 		});
 
 		function respond_to_keypress(move) {
-			console.debug(move)
-			if ( (new Date()).getTime() < next_range ) {
+			var curr_time = (new Date()).getTime();
+			if ( curr_time < next_range ) {
 				// do nothing
-				console.debug("):")
-			} else if ( (new Date()).getTime() < next_range + ALLOW_KEYPRESS_RANGE) {
+				console.debug("if")
+				accept_a_move = false;
+			} else if ( curr_time < next_range + ALLOW_KEYPRESS_RANGE) {
+				console.debug("else if")
 				if (move == "L") {
 					left.play();
 				} else if (move == "R") {
@@ -50,13 +52,13 @@
 				} else if (move == "U") {
 					center.play();
 				}
+				accept_a_move = true;
 				arr.push(move);
-				console.log("ok")
 			} else {
+				console.debug("else")
 				if (accept_a_move) {
 					arr.push(" ")
 				}
-
 				accept_a_move = false;
 
 				if ( arr.length > expected_arr_length) {
@@ -65,13 +67,14 @@
 
 				expected_arr_length++;
 
-				console.log("asdfa")
+				console.debug(arr.join());
 
-				var d = (new Date()).getTime();
-				if ( d < next_range + TIME_INTERVAL)
+				if ( curr_time < next_range + TIME_INTERVAL) {
 					next_range += TIME_INTERVAL;
-				else {
-					next_range += (TIME_INTERVAL + 1)*((new Date()).getTime() - next_range + TIME_INTERVAL)%(TIME_INTERVAL)
+				} else {
+					var time_difference = curr_time - next_range;
+					time_difference = (time_difference - time_difference%TIME_INTERVAL)/TIME_INTERVAL + 1
+					next_range += TIME_INTERVAL*time_difference;
 				}
 			}
 		}
