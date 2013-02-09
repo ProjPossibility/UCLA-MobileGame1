@@ -77,11 +77,14 @@ function Timer(counter, str)
     if(timerCheck &&  timer%timerIntervals == 200) {
 	    tempoIntervals[intervalnum] = false;
             if(counter) {
-                if(str[intervalnum] != '-')
+                if(str[intervalnum] != '-') {
                     if(inputString[intervalnum] == 'U')
                         document.getElementById("arr").innerHTML = "blocked";
                     else
-                        document.getElementById("arr").innerHTML = "dead";
+                        document.getElementById("arr").innerHTML = "hit";
+                } else {
+                    document.getElementById("arr").innerHTML = "no action";
+                }
             }
             intervalnum++;
             dog.play();
