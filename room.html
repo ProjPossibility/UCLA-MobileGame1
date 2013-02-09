@@ -287,7 +287,7 @@
 				otherID=1;
 				game.child('players').off('value', func);
 				game.child('players').child(playerID).set("online");
-				beginGame();
+				//beginGame();
 			} else {
 				game.child('players').off('value', func);
 				game.child('players').child(playerID).set("online");
@@ -296,7 +296,7 @@
 				readNum.play();
 				game.child('players').on('child_added',function(data) {
 					if(data.name()==2) {
-						beginGame();
+						//beginGame();
 					}
 				});
 			}
@@ -319,6 +319,7 @@
 			}
 		});
 		game.on('child_changed',function(data) {
+			console.log(data.name());
 			if(data.name()=="attacking") {
                                 document.getElementById("attackAudio").play();
 				currentAttacks=[];
@@ -372,6 +373,7 @@
 			$("#afterGame").show();
 		}
 		function beginGame() {
+			console.log("BEGUN");
 			$("#roomNum").hide();
 			//$("#gameInfo").show();
 			$("#afterGame").hide();
@@ -500,6 +502,8 @@
 		        (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
 		    );
 		}
+			});
+
 	</script>
 </body>
 </html>
