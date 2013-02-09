@@ -90,11 +90,12 @@
 	var intervalnum = 0;
 	var time;
 	var timerCheck;
+	var round = 1;
 	function start(counter, str) {
 		clearInterval(time);
         timer = 0;
 	    intervalnum = 0;
-	    inputString = ['-', '-', '-', '-'];
+	    inputString = ['-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-','-', '-', '-', '-'];
 	    timerCheck = false;
 	    if(counter)
 	        document.getElementById("mode").innerHTML = "Defending";
@@ -122,12 +123,30 @@
 		inputDelayTimer+=1;
 		if(keyPressed)
 			keyTimer +=1;
-		if(timer != 5000 && timer%timerIntervals == 0) {
+		switch(round)
+		{
+		case 1,2:
+			timerIntervals = 1000;
+			break;
+		case 3:
+			timerIntervals = 500;
+			break;
+		case 4:
+			timerIntervals = 1000;
+			break;
+		case 5:
+			timerIntervals = 500;
+			break;
+		default:
+			break;
+		}
+		
+		if(timer%timerIntervals == 0) {
 	        timerCheck = true;
 	                cow.play();
 			tempoIntervals[intervalnum] = true;
 	        }
-	    if(timerCheck &&  timer%timerIntervals == 200) {
+	    if(timerCheck &&  timer%timerIntervals == 100) {
 		    tempoIntervals[intervalnum] = false;
 	            if(counter) {
 	                if(str[intervalnum] != '-') {
@@ -142,11 +161,30 @@
 	            intervalnum++;
 	            dog.play();
 	        }
-		if(timer>=5000) {
+		var intervalMax = 0;
+		switch(round)
+		{
+		case 1:
+			intervalMax = 4;
+			break;
+		case 2,3:
+			intervalMax = 8;
+			break;
+		case 4:
+			intervalMax = 12;
+			break;
+		case 5:
+			intervalMax = 16;
+			break;
+		default:
+			break;
+		}
+		if(intervalnum>=intervalMax) {
 			document.getElementById("demo").innerHTML = inputString;
-	                clearInterval(time);
-	                timer = 0;
-	                if(!counter) {
+					clearInterval(time);
+					timer = 0;
+					round++;
+					if(!counter) {
 						game.child('defending').set(otherID);
 						game.child('input').set(inputString.join(''));
 					} else {
@@ -154,11 +192,11 @@
 						game.child("round").set(parseInt($("#roundNum").text())+1);
 					}
 
-	        }
+			}
 		if(Key.isDown(Key.UP) && keyTimer<50 && inputDelayTimer>100)
 		{
 			delay = true;
-			for(var i = 0; i<4;i++)
+			for(var i = 0; i<intervalMax;i++)
 	                {
 			    if(tempoIntervals[i])
 				{
@@ -178,7 +216,7 @@
 		if(Key.isDown(Key.RIGHT) &&keyTimer<50 && inputDelayTimer>100)
 		{
 			delay = true;
-			for(var i = 0; i<4;i++)
+			for(var i = 0; i<intervalMax;i++)
 	                {
 			    if(tempoIntervals[i])
 				{
@@ -209,17 +247,6 @@
 			if(delay)
 				inputDelayTimer = 0;
 		}
-		/*if(Key.isDown(Key.DOWN) &&keyTimer<50 && inputDelayTimer>100)
-		{
-			delay = true;
-			for(var i = 0; i<4;i++)
-	                {
-			    if(tempoIntervals[i])
-			        inputString[i] = 'D';
-			}
-			if(delay)
-				inputDelayTimer = 0;
-		}*/
 	}
 	$('body').keydown(function(event) {
 		setKeyPressed();
