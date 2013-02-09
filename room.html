@@ -127,7 +127,10 @@
 			keyTimer +=1;
 		switch(Math.floor(1+parseInt($("#roundNum").text())/2))
 		{
-		case 1,2:
+		case 1:
+			timerIntervals = 100;
+			break;
+		case 2:
 			timerIntervals = 100;
 			break;
 		case 3:
@@ -142,7 +145,6 @@
 		default:
 			break;
 		}
-		
 		if(timer%timerIntervals == 0) {
 	        timerCheck = true;
 	                cow.play();
@@ -169,7 +171,10 @@
 		case 1:
 			intervalMax = 4;
 			break;
-		case 2,3:
+		case 2:
+			intervalMax = 8;
+			break;
+		case 3:
 			intervalMax = 8;
 			break;
 		case 4:
@@ -318,12 +323,12 @@
 		});
 		game.on('child_changed',function(data) {
 			if(data.name()=="attacking") {
-                                document.getElementById("attackAudio").play();
 				currentAttacks=[];
 				currentTimeouts=[];
 				$("#attacks").text("0");
 				$("#defends").text("0");
 				if(data.val()==playerID) {
+					document.getElementById("attackAudio").play();
 					canAttack=true;
 					start(false,"");
 				} else {
@@ -370,6 +375,7 @@
 			$("#afterGame").show();
 		}
 		function beginGame() {
+			$("#readNum").remove();
                         song.play();
 			$("#roomNum").hide();
 			//$("#gameInfo").show();
