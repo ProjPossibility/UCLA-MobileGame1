@@ -49,16 +49,18 @@ function setKeyReleased()
 	keyPressed = false;
 	keyTimer = 0;
 }
+var timerCheck = false;
 function Timer()
 {
 	timer = timer+1;
 	if(keyPressed)
 		keyTimer +=1;
 	if(timer%timerIntervals == 0) {
+		timerCheck = true;
                 cow.play();
 		tempoIntervals[intervalnum] = true;
         }
-        if(timer%timerIntervals == 200) {
+        if(timer%timerIntervals == 200 &&timerCheck) {
 	    tempoIntervals[intervalnum] = false;
             intervalnum++;
             dog.play();
@@ -75,7 +77,30 @@ function Timer()
 		        inputString[i] = 'U';
 		}
 	}
-
+	if(Key.isDown(Key.RIGHT) &&keyTimer<50)
+	{
+		for(var i = 0; i<4;i++)
+                {
+		    if(tempoIntervals[i])
+		        inputString[i] = 'R';
+		}
+	}
+	if(Key.isDown(Key.LEFT) &&keyTimer<50)
+	{
+		for(var i = 0; i<4;i++)
+                {
+		    if(tempoIntervals[i])
+		        inputString[i] = 'L';
+		}
+	}
+	if(Key.isDown(Key.DOWN) &&keyTimer<50)
+	{
+		for(var i = 0; i<4;i++)
+                {
+		    if(tempoIntervals[i])
+		        inputString[i] = 'D';
+		}
+	}
 }
 </script>
 </html>
