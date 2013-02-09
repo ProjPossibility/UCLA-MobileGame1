@@ -153,13 +153,12 @@
 	        }
 	    if(timerCheck &&  timer%timerIntervals == 10) {
 		    tempoIntervals[intervalnum] = false;
-	            if(counter) {
+	            if(counter&&defending==playerID) {
 	                if(str[intervalnum] != '-') {
 	                    if(inputString[intervalnum] == str[intervalnum])
 	                        document.getElementById("arr").innerHTML = "blocked";
 	                    else {
 	                        document.getElementById("arr").innerHTML = "hit";
-							if(counter)
 							document.getElementById("gotHit").play();
 							loseLife();
 						}
@@ -280,6 +279,7 @@
 		readNum.src="http://tts-api.com/tts.mp3?q="+encodeURIComponent(text);
 		var playerID=1;
 		var otherID=2;
+		var defending=0;
 		var gameStarted=false;
 		var left=document.getElementById("left");
 		var center=document.getElementById("center");
@@ -339,7 +339,8 @@
 				} else {
 					canAttack=false;
 				}
-			} else if(data.name()=="defending") {
+			} else if(data.name()=="defending") {	
+				defending=data.val();
 				if(data.val()==playerID) {
 					document.getElementById("defendAudio").play();
 					canAttack=true;
