@@ -90,7 +90,6 @@
 	var intervalnum = 0;
 	var time;
 	var timerCheck;
-	var round = 1;
 	function start(counter, str) {
 		clearInterval(time);
         timer = 0;
@@ -123,7 +122,7 @@
 		inputDelayTimer+=1;
 		if(keyPressed)
 			keyTimer +=1;
-		switch(round)
+		switch(Math.floor(1+parseInt($("#roundNum").text())/2))
 		{
 		case 1,2:
 			timerIntervals = 1000;
@@ -162,7 +161,7 @@
 	            dog.play();
 	        }
 		var intervalMax = 0;
-		switch(round)
+		switch(Math.floor(1+parseInt($("#roundNum").text())/2))
 		{
 		case 1:
 			intervalMax = 4;
@@ -183,7 +182,6 @@
 			document.getElementById("demo").innerHTML = inputString;
 					clearInterval(time);
 					timer = 0;
-					round++;
 					if(!counter) {
 						game.child('defending').set(otherID);
 						game.child('input').set(inputString.join(''));
@@ -315,12 +313,12 @@
 		});
 		game.on('child_changed',function(data) {
 			if(data.name()=="attacking") {
-                                document.getElementById("attackAudio").play();
 				currentAttacks=[];
 				currentTimeouts=[];
 				$("#attacks").text("0");
 				$("#defends").text("0");
 				if(data.val()==playerID) {
+					document.getElementById("attackAudio").play();
 					canAttack=true;
 					start(false,"");
 				} else {
