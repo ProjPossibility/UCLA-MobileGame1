@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-    <script type="text/javascript" src="keypress.js"></script>
+<!--    <script type="text/javascript" src="keypress.js"></script>-->
 <head>
     <title> Rhythm Game </title>
-    <link rel="stylesheet" type="text/css" href="style.css"/>
+ <!--   <link rel="stylesheet" type="text/css" href="style.css"/>-->
 </head>
 <body onkeydown="setKeyPressed()" onkeyup="setKeyReleased()" onload="start(false, null)">
     <div id="mode"></div>
@@ -41,10 +41,11 @@ var tempoIntervals = [false,false,false,false];
 var timerIntervals = 1000;
 var intervalnum = 0;
 var time;
-
+var timerCheck;
 function start(counter, str) {
     intervalnum = 0;
     inputString = ['-', '-', '-', '-'];
+    timerCheck = false;
     if(counter)
         document.getElementById("mode").innerHTML = "Defending";
     else
