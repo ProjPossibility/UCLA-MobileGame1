@@ -1,0 +1,12 @@
+body {
+    margin: 10px 0;
+	font-family: 'Oswald', sans-serif;
+	font-weight: bold;
+	color: #e36b23;
+	text-rendering: optimizelegibility;
+
+	text-align: center;
+	font-size: 20px;
+
+	background-color: #2a333c;
+}
