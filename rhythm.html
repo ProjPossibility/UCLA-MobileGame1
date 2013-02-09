@@ -31,8 +31,8 @@ var Key = {
     window.addEventListener('keydown', function(event) {Key.onKeydown(event);}, false);
 	
 
-var cow = new Audio("music/beep-7.wav");
-var dog = new Audio("music/beep-8.wav");
+var cow = new Audio("sounds/beep-7.wav");
+var dog = new Audio("sounds/beep-8.wav");
 var inputString = ['-', '-', '-', '-'];
 var keyPressed = false;
 var keyTimer = 0;
@@ -78,7 +78,7 @@ function Timer(counter, str)
 	    tempoIntervals[intervalnum] = false;
             if(counter) {
                 if(str[intervalnum] != '-') {
-                    if(inputString[intervalnum] == 'U')
+                    if(inputString[intervalnum] == str[intervalnum])
                         document.getElementById("arr").innerHTML = "blocked";
                     else
                         document.getElementById("arr").innerHTML = "hit";
