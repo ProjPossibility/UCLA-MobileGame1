@@ -1,0 +1,472 @@
+<html>
+<head>
+	<title>Audio Sword</title>
+</head>
+<body>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<div id="mode"></div>
+    <div id="demo"></div>
+    <div id="arr"></div>
+	<div id="round">Round: <span id="roundNum">0</span></div>
+<div style="display:none;">
+	<div id="roomNum" style="display:none;">
+		Tell your opponent to join room number: <span id="num"></span>
+	</div>
+	<div id="gameInfo" style="display:none;">
+		<div>Your Score:</div>
+		<div id="life">100</div>
+		<div>Other Score:</div>
+		<div id="otherlife">100</div>
+		<div>Your Attack Count:</div>
+		<div id="attacks">0</div>
+		<div>Their Attack Count:</div>
+		<div id="defends">0</div>
+		<div>Current Stage:</div>
+		<div id="startAttack" style="display:none;">Begin Attack</div>
+		<div id="defend" style="display:none;">Defend</div>
+		<div id="finishAttack" style="display:none;">Finished Attacking</div>
+		<br>
+		<div>Instructions:</div>
+		<br>
+		<div>Attack Stage:</div>
+		<div>To attack, use left, right, or up keys</div>
+		<div>You have 10 attacks to try and damage the opponent</div>
+		<br>
+		<div>Defend Stage:</div>
+		<div>To defend, use left, right, or up keys to match what the attack you heard</div>
+		<div>You lose a life point if they attack and you don't defend</div>
+		<div>You also lose a life point if you defend with the wrong key</div>
+	</div>
+	<div id="afterGame" style="display:none;">
+		<div id="results"></div>
+		<a href="index.html" id="goBack">Go Back</a>
+	</div>
+	</div>
+	<div id="audios" style="display:none;">
+	<audio id="left" controls src="sounds/left.wav"></audio>
+	<audio id="center" controls src="sounds/center.wav"></audio>
+	<audio id="right" controls src="sounds.right.wav"></audio>
+	<audio id="attackAudio" controls src="sounds/attack.wav"></audio>
+	<audio id="defendAudio" controls src="sounds/defend.wav"></audio>
+	<audio id="wonAudio" controls src="sounds/won.wav"></audio>
+	<audio id="lostAudio" controls src="sounds/lost.wav"></audio>
+	<audio id="readNum" controls></audio>
+	</div>
+	<script type="text/javascript" src="https://cdn.firebase.com/v0/firebase.js"></script>
+	<script>
+	var Key = {
+	        _pressed: {},
+	        LEFT: 37,
+	        RIGHT: 39,
+	        DOWN: 40,
+	        UP: 38,
+	        isDown: function(keyCode) {
+	            return this._pressed[keyCode];
+	        },
+	        onKeydown: function(event) {
+	            this._pressed[event.keyCode] = true;
+	        },
+	        onKeyup: function(event) {
+	            delete this._pressed[event.keyCode];
+	        }
+	    };
+	    window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
+	    window.addEventListener('keydown', function(event) {Key.onKeydown(event);}, false);
+
+
+	var cow = new Audio("sounds/beep-7.wav");
+	var dog = new Audio("sounds/beep-8.wav");
+	var lSword = new Audio("sounds/leftSword.wav");
+	var rSword = new Audio("sounds/rightSword.wav");
+	var cSword = new Audio("sounds/centerSword.wav");
+	var inputString = ['-', '-', '-', '-'];
+	var keyPressed = false;
+	var keyTimer = 0;
+	var inputDelayTimer = 100;
+	var delay = false;
+	var timer = 0;
+	var tempoIntervals = [false,false,false,false];
+	var timerIntervals = 1000;
+	var intervalnum = 0;
+	var time;
+	var timerCheck;
+	function start(counter, str) {
+		clearInterval(time);
+        timer = 0;
+	    intervalnum = 0;
+	    inputString = ['-', '-', '-', '-'];
+	    timerCheck = false;
+	    if(counter)
+	        document.getElementById("mode").innerHTML = "Defending";
+	    else
+	        document.getElementById("mode").innerHTML = "Attacking";
+	    time = setInterval(function() { Timer(counter, str) } , 1);
+	}
+
+	function setKeyPressed()
+	{
+		keyPressed = true;
+	}
+
+	function setKeyReleased()
+	{
+		keyPressed = false;
+		keyTimer = 0;
+	}
+
+	var timerCheck = false;
+	function Timer(counter, str)
+	{
+		delay = false;
+		timer = timer+1;
+		inputDelayTimer+=1;
+		if(keyPressed)
+			keyTimer +=1;
+		if(timer != 5000 && timer%timerIntervals == 0) {
+	        timerCheck = true;
+	                cow.play();
+			tempoIntervals[intervalnum] = true;
+	        }
+	    if(timerCheck &&  timer%timerIntervals == 200) {
+		    tempoIntervals[intervalnum] = false;
+	            if(counter) {
+	                if(str[intervalnum] != '-') {
+	                    if(inputString[intervalnum] == str[intervalnum])
+	                        document.getElementById("arr").innerHTML = "blocked";
+	                    else
+	                        document.getElementById("arr").innerHTML = "hit";
+	                } else {
+	                    document.getElementById("arr").innerHTML = "no action";
+	                }
+	            }
+	            intervalnum++;
+	            dog.play();
+	        }
+		if(timer>=5000) {
+			document.getElementById("demo").innerHTML = inputString;
+	                clearInterval(time);
+	                timer = 0;
+	                if(!counter) {
+						game.child('defending').set(otherID);
+						game.child('input').set(inputString.join(''));
+					} else {
+						game.child('attacking').set(playerID);
+						game.child("round").set(parseInt($("#roundNum").text())+1);
+					}
+
+	        }
+		if(Key.isDown(Key.UP) && keyTimer<50 && inputDelayTimer>100)
+		{
+			delay = true;
+			for(var i = 0; i<4;i++)
+	                {
+			    if(tempoIntervals[i])
+				{
+			        inputString[i] = 'U';
+					c();
+					game.child(otherID).push({move: 'c'});
+					delay = false;
+					tempoIntervals[i]=false;
+				}
+			}
+			if(delay)
+				{
+				inputDelayTimer = 0;
+				}
+
+		}
+		if(Key.isDown(Key.RIGHT) &&keyTimer<50 && inputDelayTimer>100)
+		{
+			delay = true;
+			for(var i = 0; i<4;i++)
+	                {
+			    if(tempoIntervals[i])
+				{
+			        inputString[i] = 'R';
+					r();
+					game.child(otherID).push({move: 'r'});
+					delay = false;
+					tempoIntervals[i]=false;
+				}
+			}
+			if(delay)
+				inputDelayTimer = 0;
+		}
+		if(Key.isDown(Key.LEFT) &&keyTimer<50 && inputDelayTimer>100)
+		{
+			delay = true;
+			for(var i = 0; i<4;i++)
+	                {
+			    if(tempoIntervals[i])
+				{
+			        inputString[i] = 'L';
+					l();
+					game.child(otherID).push({move: 'l'});
+					delay = false;
+					tempoIntervals[i]=false;
+				}
+			}
+			if(delay)
+				inputDelayTimer = 0;
+		}
+		if(Key.isDown(Key.DOWN) &&keyTimer<50 && inputDelayTimer>100)
+		{
+			delay = true;
+			for(var i = 0; i<4;i++)
+	                {
+			    if(tempoIntervals[i])
+			        inputString[i] = 'D';
+			}
+			if(delay)
+				inputDelayTimer = 0;
+		}
+	}
+	$('body').keydown(function(event) {
+		setKeyPressed();
+	});
+	$('body').keyup(function(event) {
+		setKeyReleased();
+	});
+		var gameID=getURLParameter("room");
+		if(gameID=="null") {
+			gameID=Math.floor(Math.random()*1000000);
+			$("#num").text(gameID);
+			//$("#roomNum").show();
+		}
+		var readNum=document.getElementById("readNum");
+		var text="Tell your opponent to join room number: ";
+		var digits=gameID.toString().split("");
+		for(var i=0;i<digits.length;i++) text+=digits[i]+" ";
+		readNum.src="http://tts-api.com/tts.mp3?q="+encodeURIComponent(text);
+		var playerID=1;
+		var otherID=2;
+		var gameStarted=false;
+		var left=document.getElementById("left");
+		var center=document.getElementById("center");
+		var right=document.getElementById("right");
+		var game = new Firebase('https://swordgame.firebaseio.com/'+gameID+'/');
+		var canAttack=true;
+		var currentAttacks=[];
+		var currentTimeouts=[];
+		game.child('players').child(playerID).onDisconnect().set("offline");
+		var func = function(isOnline) {
+			if (isOnline.val()) {
+				playerID=2;
+				otherID=1;
+				game.child('players').off('value', func);
+				game.child('players').child(playerID).set("online");
+				beginGame();
+			} else {
+				game.child('players').off('value', func);
+				game.child('players').child(playerID).set("online");
+				$("#num").text(gameID);
+				//$("#roomNum").show();
+				readNum.play();
+				game.child('players').on('child_added',function(data) {
+					if(data.name()==2) {
+						beginGame();
+					}
+				});
+			}
+			if(isOnline.child("1").val()=="offline"||isOnline.child("2").val()=="offline") {
+				window.location="index.html";
+			}
+		}
+		game.child('players').on('value', func);
+		game.child('players').on('child_changed',function(data) {
+			if(data.val()=="offline") {
+				window.location='index.html';
+			}
+		});
+		game.child("scores").on('child_changed',function(data) {
+			if(data.name()==otherID) {
+				$("#otherlife").text(data.val());
+				if(parseInt($("#otherlife").text())<=0) {
+					wonGame();
+				}
+			}
+		});
+		game.on('child_changed',function(data) {
+			if(data.name()=="attacking") {
+				currentAttacks=[];
+				currentTimeouts=[];
+				$("#attacks").text("0");
+				$("#defends").text("0");
+				if(data.val()==playerID) {
+					canAttack=true;
+					start(false,"");
+				} else {
+					canAttack=false;
+				}
+			} else if(data.name()=="defending") {
+				if(data.val()==playerID) {
+					document.getElementById("attackAudio").play();
+					canAttack=true;
+					game.child('input').on('value', function(data) {
+						start(true,data.val().split(''));
+					});
+				} else {
+					canAttack=false;
+				}
+			} else if(data.name()=="round") {
+				$("#roundNum").text(data.val());
+			}
+		});
+		/*$('body').keydown(function(event) {
+			if(event.which==37) {
+				lPress();
+			} else if(event.which==38) {
+				cPress();
+			} else if(event.which==39) {
+				rPress();
+			} else if(!gameStarted&&event.which==66) {
+				window.location="index.html";
+			}
+		});*/
+		function lostGame() {
+			document.getElementById("lostAudio").play();
+			$("#results").text("You lost :(");
+			endGame();
+		}
+		function wonGame() {
+			document.getElementById("wonAudio").play();
+			$("#results").text("YOU WON :D");
+			endGame();
+		}
+		function endGame() {
+			gameStarted=false;
+			$("#gameInfo").hide();
+			$("#afterGame").show();
+		}
+		function beginGame() {
+			$("#roomNum").hide();
+			//$("#gameInfo").show();
+			$("#afterGame").hide();
+			game.child("attacking").set(0);
+			game.child("round").set(0);
+			game.child("attacking").set(1);
+			game.child("defending").set(0);
+			game.child("scores").child(1).set(100);
+			game.child("scores").child(2).set(100);
+			$("#life").text("100");
+			$("#otherlife").text("100");
+			gameStarted=true;
+			game.child(playerID).on('child_added', function (snapshot) {
+				var message = snapshot.val().move;
+				if(message=="l") {
+					l();
+				} else if(message=="c") {
+					c();
+				} else if(message=="r") {
+					r();
+				}
+			});
+		}
+		function block(which) {
+			for(var i=0;i<currentAttacks.length;i++) {
+				if(currentAttacks[i]==which) {
+					currentAttacks[i]='done';
+					clearTimeout(currentTimeouts[i]);
+					return;
+				}
+			}
+			loseLife();
+		}
+		function attacked() {
+			if(canAttack) {
+				$("#attacks").text(parseInt($("#attacks").text())+1);
+				if(parseInt($("#attacks").text())>=10) {
+					$("#startAttack").hide();
+					$("#finishAttack").show();
+					canAttack=false;
+					setTimeout(function(){
+						game.child("attacking").set(otherID);
+					},2000);
+				}
+			}
+		}
+		function beenAttacked(which) {
+			if(!canAttack) {
+				var curr=parseInt($("#defends").text());
+				currentAttacks.push(which);
+				currentTimeouts.push(setTimeout(function(){
+					loseLife();
+				},1000));
+				$("#defends").text(curr+1);
+			}
+		}
+		function loseLife() {
+			$("#life").text(parseInt($("#life").text())-1);
+			game.child("scores").child(playerID).set(parseInt($("#life").text()));
+			if(parseInt($("#life").text())<=0) {
+				lostGame();
+			}
+		}
+		function lPress() {
+			if(!gameStarted) return;
+			if(canAttack) {
+				l();
+				attacked();
+				game.child(otherID).push({move: 'r'});
+			} else {
+				block('l');
+			}
+		}
+		function cPress() {
+			if(!gameStarted) return;
+			if(canAttack) {
+				c();
+				attacked();
+				game.child(otherID).push({move: 'c'});
+			} else {
+				block('c');
+			}
+		}
+		function rPress() {
+			if(!gameStarted) return;
+			if(canAttack) {
+				r();
+				attacked();
+				game.child(otherID).push({move: 'l'});
+			} else {
+				block('r');
+			}
+		}
+		function lAttack() {
+			if(!gameStarted) return;
+			if(canAttack) return;
+			l();
+			beenAttacked('l');
+		}
+		function cAttack() {
+			if(!gameStarted) return;
+			if(canAttack) return;
+			c();
+			beenAttacked('c');
+		}
+		function rAttack() {
+			if(!gameStarted) return;
+			if(canAttack) return;
+			r();
+			beenAttacked('r');
+		}
+		function l() {
+			left.currentTime=0;
+			left.play();
+		}
+		function c() {
+			center.currentTime=0;
+			center.play();
+		}
+		function r() {
+			right.currentTime=0;
+			right.play();
+		}
+		function getURLParameter(name) {
+		    return decodeURI(
+		        (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
+		    );
+		}
+	</script>
+</body>
+</html>
