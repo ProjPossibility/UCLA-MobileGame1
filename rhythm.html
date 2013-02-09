@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <script type="text/javascript" src="keypress.js"></script>
+<head>
+    <title> Rhythm Game </title>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+</head>
+<body onkeydown=setKeyPressed() onkeyup=setKeyReleased()>
+    <div id="demo"></div>
+    <div id="arr"></div>
+</body>
+<script>
+var cow = new Audio("music/beep-7.wav");
+var dog = new Audio("music/beep-8.wav");
+var myTimer = setInterval(function(){Timer()},1);
+var inputString = ['-', '-', '-', '-'];
+var keyPressed = false;
+var keyTimer = 0;
+var timer = 0;
+var tempoIntervals = [false,false,false,false];
+var timerIntervals = 1000;
+var intervalnum = 0;
+function setKeyPressed()
+{
+	keyPressed = true;
+}
+function setKeyReleased()
+{
+	keyPressed = false;
+	keyTimer = 0;
+}
+function Timer()
+{
+	timer = timer+1;
+	if(keyPressed)
+		keyTimer +=1;
+	if(timer%timerIntervals == 0) {
+                cow.play();
+		tempoIntervals[intervalnum] = true;
+        }
+        if(timer%timerIntervals == 200) {
+	    tempoIntervals[intervalnum] = false;
+            intervalnum++;
+            dog.play();
+        }
+	if(timer>=5000) {
+                alert(inputString);
+		timer = 0;
+        }
+	if(Key.isDown(Key.UP) &&keyTimer<50)
+	{
+		for(var i = 0; i<4;i++)
+                {
+		    if(tempoIntervals[i])
+		        inputString[i] = 'U';
+		}
+	}
+
+}
+</script>
+</html>
