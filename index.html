@@ -1,0 +1,53 @@
+<html>
+<head>
+	<title>Audio Sword</title>
+</head>
+<body>
+<a href="#" onclick="goToRandomRoom()">Start Game</a>
+<br>
+<a href="#" onclick="goToRoom()">Join Game</a>
+<br>
+Game ID: <input id="roomNum" type='text' onkeypress='validate(event)' />
+<script type="text/javascript" src="https://cdn.firebase.com/v0/firebase.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script type="text/javascript">
+$('body').keydown(function(event) {
+	if(event.which==83) {
+		goToRandomRoom()
+	} else if(event.which==74) {
+		document.getElementById("roomNum").focus();
+	}
+});
+$("#roomNum").keydown(function(event) {
+	if(event.which==13) {
+		goToRoom();
+	}
+});
+function validate(evt) {
+  var theEvent = evt || window.event;
+  var key = theEvent.keyCode || theEvent.which;
+  key = String.fromCharCode( key );
+  var regex = /[0-9]|\./;
+  if( !regex.test(key) ) {
+    theEvent.returnValue = false;
+    if(theEvent.preventDefault) theEvent.preventDefault();
+  }
+}
+function goToRoom() {
+	window.location="room.html?room="+document.getElementById("roomNum").value;
+}
+function goToRandomRoom() {
+	var num=Math.floor(Math.random()*1000000);
+	var games = new Firebase('https://swordgame.firebaseio.com/');
+	var currGames;
+	games.once('value',function(data){
+		currGames=data.val();
+		while(typeof currGames[num]!='undefined') {
+			num=Math.floor(Math.random()*1000000);
+		}
+		window.location="room.html?room="+num;
+	});
+}
+</script>
+</body>
+</html>

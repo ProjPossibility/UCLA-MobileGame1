@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
-<!--    <script type="text/javascript" src="keypress.js"></script>-->
+
 <head>
     <title> Rhythm Game </title>
- <!--   <link rel="stylesheet" type="text/css" href="style.css"/>-->
 </head>
 <body onkeydown="setKeyPressed()" onkeyup="setKeyReleased()" onload="start(false, null)">
     <div id="mode"></div>
@@ -33,9 +32,14 @@ var Key = {
 
 var cow = new Audio("sounds/beep-7.wav");
 var dog = new Audio("sounds/beep-8.wav");
+var lSword = new Audio("sounds/leftSword.wav");
+var rSword = new Audio("sounds/rightSword.wav");
+var cSword = new Audio("sounds/centerSword.wav");
 var inputString = ['-', '-', '-', '-'];
 var keyPressed = false;
 var keyTimer = 0;
+var inputDelayTimer = 100;
+var delay = false;
 var timer = 0;
 var tempoIntervals = [false,false,false,false];
 var timerIntervals = 1000;
@@ -78,7 +82,9 @@ function makeDefendString( atkstr )
 var timerCheck = false;
 function Timer(counter, str)
 {
+	delay = false;
 	timer = timer+1;
+	inputDelayTimer+=1;
 	if(keyPressed)
 		keyTimer +=1;
 	if(timer != 5000 && timer%timerIntervals == 0) {
@@ -109,37 +115,62 @@ function Timer(counter, str)
                     start(true, makeDefendString(inputString) );
                     
         }
-	if(Key.isDown(Key.UP) &&keyTimer<50)
+	if(Key.isDown(Key.UP) && keyTimer<50 && inputDelayTimer>100)
 	{
+		delay = true;
 		for(var i = 0; i<4;i++)
                 {
 		    if(tempoIntervals[i])
+			{
 		        inputString[i] = 'U';
+				cSword.play();
+				delay = false;
+			}
 		}
+		if(delay)
+			{
+			inputDelayTimer = 0;
+			}
+			
 	}
-if(Key.isDown(Key.RIGHT) &&keyTimer<50)
+	if(Key.isDown(Key.RIGHT) &&keyTimer<50 && inputDelayTimer>100)
 	{
+		delay = true;
 		for(var i = 0; i<4;i++)
                 {
 		    if(tempoIntervals[i])
+			{
 		        inputString[i] = 'R';
+				rSword.play();
+			}
 		}
+		if(delay)
+			inputDelayTimer = 0;
 	}
-if(Key.isDown(Key.LEFT) &&keyTimer<50)
+	if(Key.isDown(Key.LEFT) &&keyTimer<50 && inputDelayTimer>100)
 	{
+		delay = true;
 		for(var i = 0; i<4;i++)
                 {
 		    if(tempoIntervals[i])
+			{
 		        inputString[i] = 'L';
+				lSword.play();
+			}
 		}
+		if(delay)
+			inputDelayTimer = 0;
 	}
-if(Key.isDown(Key.DOWN) &&keyTimer<50)
+	if(Key.isDown(Key.DOWN) &&keyTimer<50 && inputDelayTimer>100)
 	{
+		delay = true;
 		for(var i = 0; i<4;i++)
                 {
 		    if(tempoIntervals[i])
 		        inputString[i] = 'D';
 		}
+		if(delay)
+			inputDelayTimer = 0;
 	}
 }
 </script>
