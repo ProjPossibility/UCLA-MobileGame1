@@ -8,15 +8,15 @@
     <div id="demo"></div>
     <div id="arr"></div>
 	<div id="round">Round: <span id="roundNum">0</span></div>
+		<div>Your Score:</div>
+		<div id="life">100</div>
+		<div>Other Score:</div>
+		<div id="otherlife">100</div>
 <div style="display:none;">
 	<div id="roomNum" style="display:none;">
 		Tell your opponent to join room number: <span id="num"></span>
 	</div>
 	<div id="gameInfo" style="display:none;">
-		<div>Your Score:</div>
-		<div id="life">100</div>
-		<div>Other Score:</div>
-		<div id="otherlife">100</div>
 		<div>Your Attack Count:</div>
 		<div id="attacks">0</div>
 		<div>Their Attack Count:</div>
@@ -50,6 +50,7 @@
 	<audio id="defendAudio" controls src="sounds/defend.wav"></audio>
 	<audio id="wonAudio" controls src="sounds/won.wav"></audio>
 	<audio id="lostAudio" controls src="sounds/lost.wav"></audio>
+	<audio id="gotHit" controls src="sounds/cut_grunt2.wav" volume="10.0"></audio>
 	<audio id="readNum" controls></audio>
 	</div>
 	<script type="text/javascript" src="https://cdn.firebase.com/v0/firebase.js"></script>
@@ -156,8 +157,12 @@
 	                if(str[intervalnum] != '-') {
 	                    if(inputString[intervalnum] == str[intervalnum])
 	                        document.getElementById("arr").innerHTML = "blocked";
-	                    else
+	                    else {
 	                        document.getElementById("arr").innerHTML = "hit";
+							if(counter)
+							document.getElementById("gotHit").play();
+							loseLife();
+						}
 	                } else {
 	                    document.getElementById("arr").innerHTML = "no action";
 	                }
