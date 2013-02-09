@@ -45,7 +45,7 @@
 	<div id="audios" style="display:none;">
 	<audio id="left" controls src="sounds/left.wav"></audio>
 	<audio id="center" controls src="sounds/center.wav"></audio>
-	<audio id="right" controls src="sounds.right.wav"></audio>
+	<audio id="right" controls src="sounds/right.wav"></audio>
 	<audio id="attackAudio" controls src="sounds/attack.wav"></audio>
 	<audio id="defendAudio" controls src="sounds/defend.wav"></audio>
 	<audio id="wonAudio" controls src="sounds/won.wav"></audio>
@@ -209,7 +209,7 @@
 			if(delay)
 				inputDelayTimer = 0;
 		}
-		if(Key.isDown(Key.DOWN) &&keyTimer<50 && inputDelayTimer>100)
+		/*if(Key.isDown(Key.DOWN) &&keyTimer<50 && inputDelayTimer>100)
 		{
 			delay = true;
 			for(var i = 0; i<4;i++)
@@ -219,7 +219,7 @@
 			}
 			if(delay)
 				inputDelayTimer = 0;
-		}
+		}*/
 	}
 	$('body').keydown(function(event) {
 		setKeyPressed();
@@ -288,6 +288,7 @@
 		});
 		game.on('child_changed',function(data) {
 			if(data.name()=="attacking") {
+                                document.getElementById("attackAudio").play();
 				currentAttacks=[];
 				currentTimeouts=[];
 				$("#attacks").text("0");
@@ -300,7 +301,7 @@
 				}
 			} else if(data.name()=="defending") {
 				if(data.val()==playerID) {
-					document.getElementById("attackAudio").play();
+					document.getElementById("defendAudio").play();
 					canAttack=true;
 					game.child('input').on('value', function(data) {
 						start(true,data.val().split(''));
