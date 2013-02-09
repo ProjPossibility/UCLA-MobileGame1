@@ -5,7 +5,8 @@
     <title> Rhythm Game </title>
     <link rel="stylesheet" type="text/css" href="style.css"/>
 </head>
-<body onkeydown=setKeyPressed() onkeyup=setKeyReleased()>
+<body onkeydown="setKeyPressed()" onkeyup="setKeyReleased()" onload="start(false, null)">
+    <div id="mode"></div>
     <div id="demo"></div>
     <div id="arr"></div>
 </body>
@@ -30,9 +31,8 @@ var Key = {
     window.addEventListener('keydown', function(event) {Key.onKeydown(event);}, false);
 	
 
-var cow = new Audio("sounds/beep-7.wav");
-var dog = new Audio("sounds/beep-8.wav");
-var myTimer = setInterval(function(){Timer()},1);
+var cow = new Audio("music/beep-7.wav");
+var dog = new Audio("music/beep-8.wav");
 var inputString = ['-', '-', '-', '-'];
 var keyPressed = false;
 var keyTimer = 0;
@@ -40,34 +40,59 @@ var timer = 0;
 var tempoIntervals = [false,false,false,false];
 var timerIntervals = 1000;
 var intervalnum = 0;
+var time;
+
+function start(counter, str) {
+    intervalnum = 0;
+    inputString = ['-', '-', '-', '-'];
+    if(counter)
+        document.getElementById("mode").innerHTML = "Defending";
+    else
+        document.getElementById("mode").innerHTML = "Attacking";
+    time = setInterval(function() { Timer(counter, str) } , 1);
+}
+
 function setKeyPressed()
 {
 	keyPressed = true;
 }
+
 function setKeyReleased()
 {
 	keyPressed = false;
 	keyTimer = 0;
 }
+
 var timerCheck = false;
-function Timer()
+function Timer(counter, str)
 {
 	timer = timer+1;
 	if(keyPressed)
 		keyTimer +=1;
-	if(timer%timerIntervals == 0) {
-		timerCheck = true;
+	if(timer != 5000 && timer%timerIntervals == 0) {
+        timerCheck = true;
                 cow.play();
 		tempoIntervals[intervalnum] = true;
         }
-        if(timer%timerIntervals == 200 &&timerCheck) {
+    if(timerCheck &&  timer%timerIntervals == 200) {
 	    tempoIntervals[intervalnum] = false;
+            if(counter) {
+                if(str[intervalnum] != '-')
+                    if(inputString[intervalnum] == 'U')
+                        document.getElementById("arr").innerHTML = "blocked";
+                    else
+                        document.getElementById("arr").innerHTML = "dead";
+            }
             intervalnum++;
             dog.play();
         }
 	if(timer>=5000) {
-                alert(inputString);
-		timer = 0;
+		document.getElementById("demo").innerHTML = inputString;
+                clearInterval(time);
+                timer = 0;
+                if(!counter)
+                    start(true, inputString);
+                    
         }
 	if(Key.isDown(Key.UP) &&keyTimer<50)
 	{
@@ -77,7 +102,7 @@ function Timer()
 		        inputString[i] = 'U';
 		}
 	}
-	if(Key.isDown(Key.RIGHT) &&keyTimer<50)
+if(Key.isDown(Key.RIGHT) &&keyTimer<50)
 	{
 		for(var i = 0; i<4;i++)
                 {
@@ -85,7 +110,7 @@ function Timer()
 		        inputString[i] = 'R';
 		}
 	}
-	if(Key.isDown(Key.LEFT) &&keyTimer<50)
+if(Key.isDown(Key.LEFT) &&keyTimer<50)
 	{
 		for(var i = 0; i<4;i++)
                 {
@@ -93,7 +118,7 @@ function Timer()
 		        inputString[i] = 'L';
 		}
 	}
-	if(Key.isDown(Key.DOWN) &&keyTimer<50)
+if(Key.isDown(Key.DOWN) &&keyTimer<50)
 	{
 		for(var i = 0; i<4;i++)
                 {
